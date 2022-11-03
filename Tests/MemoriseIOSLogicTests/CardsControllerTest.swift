@@ -7,7 +7,6 @@ class CardsControllerTest: XCTestCase {
 
     override func setUp() {
         cardsController = CardsController(scoreController: scoreController)
-    
     }
 
 
@@ -16,9 +15,10 @@ class CardsControllerTest: XCTestCase {
 
         testShuffleCards()
 
-        // testChooseCard()
 
-        // Проверка смена уровня сложности
+        testChooseCard()
+
+        // Проверка смены уровня сложности
         cardsController!.changeLevel(newLevel: 16)
         XCTAssertEqual(cardsController?.cardPairs, 16, "Изменен уровень сложности")
         testStartGame()
@@ -70,6 +70,7 @@ class CardsControllerTest: XCTestCase {
         XCTAssertEqual(comparationResult.contains(false) , true, "Карты должны быть перемешаны")
     }
 
+    // Проверка выбора карты
     fileprivate func testChooseCard() {
         cardsController?.chooseCard(cardIndex: 0)
         XCTAssertEqual(cardsController?.cards.first(where: {$0.id == 0})?.isFaceUp, true,

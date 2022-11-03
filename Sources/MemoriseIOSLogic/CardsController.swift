@@ -1,3 +1,5 @@
+import Foundation
+
 class CardsController {
     var cardPairs: Int
     var cards: [Card] = []
@@ -13,22 +15,22 @@ class CardsController {
     }
 
     func chooseCard(cardIndex: Int) {
-        if (choosenCardIndex != nil) {
+        if (choosenCardIndex == nil) {
             choosenCardIndex = cardIndex
             // перевернуть карту
-            cards.first(where: {$0.id == cardIndex})?.isFaceUp = true
+            cards.first(where: {$0.id == cardIndex})?.turn()
         } else {
             let firstCard = cards.first(where: {$0.id == choosenCardIndex})
             let secondCard = cards.first(where: {$0.id == cardIndex})
-            secondCard?.isFaceUp = true
+            secondCard?.turn()
             if (firstCard?.contentID == secondCard?.contentID) {
                 scoreController.addScore(2)
-                firstCard?.isGuessed = true
-                secondCard?.isGuessed = true
+                firstCard?.guess()
+                secondCard?.guess()
             } else {
                 scoreController.awardPenalty(1)
-                firstCard?.isFaceUp = false
-                secondCard?.isFaceUp = false
+                firstCard?.turn()
+                secondCard?.turn()
             }
             choosenCardIndex = nil
         }
@@ -45,6 +47,7 @@ class CardsController {
         cards.shuffle()
     }
 
+    // Создает список упорядоченных карт
     private func initCards() {
         cards = []
         for i in 0..<cardPairs * 2 {
@@ -57,9 +60,17 @@ class CardsController {
         startGame()
     }
 
-    // Возможно вынести
-    func useTip() {
+    func useTip() async {
+        turnAllCard()
+        await sleep(5)
+        turnAllCard()
+        scoreController.awardPenalty(5) 
+    }
 
+    func turnAllCard() {
+        for i in 0..<cardPairs * 2 {
+            cards[i].turn()
+        }
     }
 
 }
@@ -67,11 +78,21 @@ class CardsController {
 class Card {
     var id: Int
     var contentID: Int
-    var isFaceUp: Bool = false
-    var isGuessed: Bool = false
+    var isFaceUp: Bool
+    var isGuessed: Bool
 
     init(_ i: Int, content: Int){
         id = i
         contentID = content
+        isFaceUp = false
+        isGuessed = false
+    }
+
+    func turn() {
+        isFaceUp = !isFaceUp
+    }
+
+    func guess() {
+        isGuessed = !isGuessed
     }
 }

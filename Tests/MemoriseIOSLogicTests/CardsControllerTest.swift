@@ -10,7 +10,23 @@ class CardsControllerTest: XCTestCase {
     
     }
 
+
     func testExample() throws {
+        testStartGame()
+
+        testShuffleCards()
+
+        // testChooseCard()
+
+        // Проверка смена уровня сложности
+        cardsController!.changeLevel(newLevel: 16)
+        XCTAssertEqual(cardsController?.cardPairs, 16, "Изменен уровень сложности")
+        testStartGame()
+
+    }
+
+    // Проверка начала игры
+    fileprivate func testStartGame() {
         // Проверка количества карт
         XCTAssertEqual(cardsController!.cards.count, cardsController!.cardPairs * 2,
         "Проверка количества карт")
@@ -30,7 +46,10 @@ class CardsControllerTest: XCTestCase {
             }, true, "Проверка наличия всех необходимых карт"
             )
         }
+    }
 
+    // Проверка перемешивания карт
+    fileprivate func testShuffleCards() {
         // Проверка перемешивания карт
         // Карты до перемешивания
         let cardsBeforeShuffling = cardsController?.cards
@@ -49,6 +68,21 @@ class CardsControllerTest: XCTestCase {
         }
         // Необходимо чтобы хотя бы две карты не совпали
         XCTAssertEqual(comparationResult.contains(false) , true, "Карты должны быть перемешаны")
+    }
+
+    fileprivate func testChooseCard() {
+        cardsController?.chooseCard(cardIndex: 0)
+        XCTAssertEqual(cardsController?.cards.first(where: {$0.id == 0})?.isFaceUp, true,
+        "Выбранная карта должны быть перевернута")
+        // Тестирование совпадения
+        let firstCard = cardsController?.cards.first(where: {$0.id == 0})
+        let secondCard = cardsController?.cards.first(where: {$0.contentID == firstCard?.contentID})
+        cardsController?.chooseCard(cardIndex: secondCard!.id)
+        XCTAssertEqual(cardsController?.cards.first(where: {$0.id == secondCard!.id})?.isFaceUp, true,
+        "Вторая выбранная карта должны быть перевернута")
+        XCTAssertEqual(scoreController.score, 2, "Счет увеличивается на 2")
+        XCTAssertEqual(cardsController?.cards.first(where: {$0.id == 0})?.isGuessed, true, "Первая карта должны быть угадана")
+        XCTAssertEqual(cardsController?.cards.first(where: {$0.id == secondCard!.id})?.isGuessed, true, "Вто карта должны быть угадана")
     }
 
 }

@@ -1,6 +1,6 @@
 # MemoriseIOSLogic
 
-A description of this package.
+Пакет с логикой для работы игры для тренировки памяти
 
 ## Usage
 

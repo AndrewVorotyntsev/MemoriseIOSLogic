@@ -15,11 +15,10 @@ class CardsControllerTest: XCTestCase {
 
         testShuffleCards()
 
-
         testChooseCard()
 
         // Проверка смены уровня сложности
-        cardsController!.changeLevel(newLevel: 16)
+        cardsController!.changeDifficulty(newDifficulty: 16)
         XCTAssertEqual(cardsController?.cardPairs, 16, "Изменен уровень сложности")
         testStartGame()
 

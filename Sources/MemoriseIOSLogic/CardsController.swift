@@ -5,12 +5,17 @@ class CardsController {
     var cards: [Card] = []
     var scoreController: ScoreController
 
+    var amountOfTips: Int
+
     var choosenCardIndex: Int?
 
     // Инициализация игры
     init(scoreController: ScoreController) {
-        cardPairs = 8
+        // Игра начинается со случайного количества карта от 2 до 5
+        cardPairs = Int.random(in: 2..<5)
         self.scoreController = scoreController
+        // Ограничиваем количество подсказок одной
+        amountOfTips = 1
         startGame()
     }
 
@@ -24,10 +29,12 @@ class CardsController {
             let secondCard = cards.first(where: {$0.id == cardIndex})
             secondCard?.turn()
             if (firstCard?.contentID == secondCard?.contentID) {
+                // Добавляем два очка за сопадение
                 scoreController.addScore(2)
                 firstCard?.guess()
                 secondCard?.guess()
             } else {
+                // Штраф за несовпадение
                 scoreController.awardPenalty(1)
                 firstCard?.turn()
                 secondCard?.turn()
@@ -55,16 +62,19 @@ class CardsController {
         }
     }
 
-    func changeLevel(newLevel: Int) {
-        cardPairs = newLevel
+    func changeDifficulty(newDifficulty: Int) {
+        cardPairs = newDifficulty
         startGame()
     }
 
-    func useTip() async {
-        turnAllCard()
-        await sleep(5)
-        turnAllCard()
-        scoreController.awardPenalty(5) 
+    func useTip() {
+        if (amountOfTips > 0) {
+            turnAllCard()
+            sleep(5)
+            turnAllCard()
+            // При использовании подсказки начислить штрафные 5 очков
+            scoreController.awardPenalty(5) 
+        }
     }
 
     func turnAllCard() {

@@ -5,12 +5,16 @@ class CardsController {
     var cards: [Card] = []
     var scoreController: ScoreController
 
+    var amountOfTips: Int
+
     var choosenCardIndex: Int?
 
     // Инициализация игры
     init(scoreController: ScoreController) {
         cardPairs = 8
         self.scoreController = scoreController
+        // Ограничиваем количество подсказок одной
+        amountOfTips = 1
         startGame()
     }
 
@@ -60,11 +64,13 @@ class CardsController {
         startGame()
     }
 
-    func useTip() async {
-        turnAllCard()
-        await sleep(5)
-        turnAllCard()
-        scoreController.awardPenalty(5) 
+    func useTip() {
+        if (amountOfTips > 0) {
+            turnAllCard()
+            sleep(5)
+            turnAllCard()
+            scoreController.awardPenalty(5) 
+        }
     }
 
     func turnAllCard() {

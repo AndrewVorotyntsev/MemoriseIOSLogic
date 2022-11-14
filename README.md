@@ -4,4 +4,5 @@
 
 ## Usage
 
+Add the dependencies in 'Package.swift' manifest file
 `.package(url: "https://github.com/AndrewVorotyntsev/MemoriseIOSLogic.git", .branch("master"))`
